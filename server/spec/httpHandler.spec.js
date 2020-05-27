@@ -6,7 +6,11 @@ const server = require('./mockServer');
 
 const httpHandler = require('../js/httpHandler');
 
-
+// module.exports = {
+//   mock: (url, method, postdata) => {
+//     return {
+//       req: new request(url, method, postdata),
+//       res: new response
 
 describe('server responses', () => {
 
@@ -21,10 +25,42 @@ describe('server responses', () => {
     done();
   });
 
+  // Write a test to verify the server responds with a random swim command to a GET request.
+
+  //Then write the functionality that implements this feature.
+
+
   it('should respond to a GET request for a swim command', (done) => {
-    // write your test here
+    let {req, res} = server.mock('/', 'GET');
+    let command;
+
+    httpHandler.router(req, res, () => {
+      expect(res._responseCode).to.equal(200);
+      expect().to.have.any.keys('c', 'd');
+     // command =
+      expect(command) to be any of up, down, left, right
+    })
+
     done();
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   xit('should respond with 404 to a GET request for a missing background image', (done) => {
     httpHandler.backgroundImageFile = path.join('.', 'spec', 'missing.jpg');
