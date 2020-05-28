@@ -31,15 +31,12 @@ describe('server responses', () => {
 
 
   it('should respond to a GET request for a swim command', (done) => {
-    let {req, res} = server.mock('/', 'GET');
-    let command;
+    let {req, res} = server.mock('/random', 'GET');
 
-    httpHandler.router(req, res, () => {
+    httpHandler.router(req, res);
       expect(res._responseCode).to.equal(200);
-      expect().to.have.any.keys('c', 'd');
-     // command =
-      expect(command) to be any of up, down, left, right
-    })
+      expect(res._ended).to.equal(true);
+      expect(['up', 'down', 'left', 'right'].includes(res._data.toString())).to.equal(true);
 
     done();
   });

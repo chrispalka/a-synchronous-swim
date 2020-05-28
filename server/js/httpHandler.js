@@ -15,6 +15,17 @@ module.exports.initialize = (queue) => {
 module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
   res.writeHead(200, headers);
+  if (req.method === 'GET') {
+    switch (req.url) {
+      case '/random' :
+        const moves = ['up', 'down', 'right', 'left'];
+        let rndMove = moves[Math.floor(Math.random() * moves.length)];
+        res.write(rndMove);
+      //default :
+        //WHAT GOES HERE??
+        //res.write('Did not receive a valid type.')
+      }
+  }
   res.end();
   next(); // invoke next() at the end of a request to help with testing!
 };
