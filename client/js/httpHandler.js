@@ -13,6 +13,7 @@
     })
   }
 
+  setInterval(swimFetcher, 3000);
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
