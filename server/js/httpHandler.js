@@ -17,6 +17,11 @@ module.exports.initialize = (queue) => {
 
 module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
+    res.end()
+    next();
+  }
   if (req.method === 'GET') {
     switch (req.url) {
       case '/random' :
@@ -29,27 +34,35 @@ module.exports.router = (req, res, next = ()=>{}) => {
         } else {
           res.write(message);
         }
+        res.end()
+        next()
         break;
       case '/background.jpg' :
-        let backgroundImagePath = module.exports.backgroundImageFile;
-        if (fs.existsSync(backgroundImagePath)) {
-          let file = fs.createReadStream(backgroundImagePath);
-          file.on('open', function() {
-            res.setHeader('Content-type', 'image/jpeg')
+        fs.readFile(module.exports.backgroundImageFile, (err, data) => {
+          if (err) {
+            res.writeHead(404, headers);
+          } else {
             res.writeHead(200, headers);
-            file.pipe(res);
-          })
-          // res.write(backgroundImagePath);  //send image not string
-        } else {
-          res.writeHead(404, headers);
-        }
+            res.write(data, 'binary');
+          }
+          res.end()
+          next();
+        });
         break;
-      }
-  } else if (req.method === 'OPTIONS') {
-    res.writeHead(200, headers);
-  }
-  res.end();  //this might be an issue if os try moving this to /random
-  next(); // invoke next() at the end of a request to help with testing!
-};
+      };
+  };
+}
 
 
+
+// if (fs.existsSync(backgroundImagePath)) {
+//   let file = fs.createReadStream(backgroundImagePath);
+//   file.on('open', function() {
+//     res.setHeader('Content-type', 'image/jpeg')
+//     res.writeHead(200, headers);
+//     file.pipe(res);
+//   })
+//   // res.write(backgroundImagePath);  //send image not string
+// } else {
+//   res.writeHead(404, headers);
+// }
