@@ -5,16 +5,15 @@ const multipart = require('./multipartUtils');
 const messages = require('./messageQueue');
 
 // Path for the background image ///////////////////////
-module.exports.backgroundImageFile = path.join('.', '');
+module.exports.backgroundImageFile = path.join('.', 'background.jpg');
 ////////////////////////////////////////////////////////
+
 
 let messageQueue = null;
 module.exports.initialize = (queue) => {
-  //if q empty send random
-  //we can maybe use keypress.initialize here ???
-
   messageQueue = queue;
 };
+
 
 module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
@@ -30,29 +29,27 @@ module.exports.router = (req, res, next = ()=>{}) => {
         } else {
           res.write(message);
         }
-      //default :
-        //WHAT GOES HERE??
-        //res.write('Did not receive a valid type.')
-      case '/background' :
-        let backgroundPresent = fs.access('../img/background.jpg', fs.constants.F_OK, (err) => {
-          return err ? false : true;
-        } )
-        if (backgroundPresent) {
-          res.writeHead(200, headers);
+        break;
+      case '/background.jpg' :
+        let backgroundImagePath = module.exports.backgroundImageFile;
+        if (fs.existsSync(backgroundImagePath)) {
+          let file = fs.createReadStream(backgroundImagePath);
+          file.on('open', function() {
+            res.setHeader('Content-type', 'image/jpeg')
+            res.writeHead(200, headers);
+            file.pipe(res);
+          })
+          // res.write(backgroundImagePath);  //send image not string
         } else {
           res.writeHead(404, headers);
         }
+        break;
       }
+  } else if (req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
   }
-  res.end();
+  res.end();  //this might be an issue if os try moving this to /random
   next(); // invoke next() at the end of a request to help with testing!
 };
 
 
-// case '/background':
-//       let backgroundPresent = fs.access('../img/background.jpg', fs.constants.F_OK);
-//       if (backgroundPresent) {
-//         res.writeHead(200, headers);
-//       } else {
-//         res.writeHead(404, headers);
-//       }

@@ -13,7 +13,21 @@
     })
   }
 
-  setInterval(swimFetcher, 3000);
+  // setInterval(swimFetcher, 3000);
+
+  const backgroundFetcher = (data) => {
+    $.ajax({
+      type: 'GET',
+      url: `${serverUrl}/background.jpg`,
+      success: (data) => {
+        //console.log server response
+        console.log('Data from backgroundFetcher: ', data);
+
+      }
+    })
+  }
+
+  backgroundFetcher();
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
