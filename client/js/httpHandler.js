@@ -20,9 +20,7 @@
       type: 'GET',
       url: `${serverUrl}/background.jpg`,
       success: (data) => {
-        //console.log server response
-        console.log('Data from backgroundFetcher: ', data);
-
+        console.log('Success!');
       }
     })
   }
@@ -40,7 +38,7 @@
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: `${serverUrl}/upload`,
       cache: false,
       contentType: false,
       processData: false,

@@ -19,7 +19,7 @@ module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
   if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
-    res.end()
+    res.end();
     next();
   }
   if (req.method === 'GET') {
@@ -34,8 +34,8 @@ module.exports.router = (req, res, next = ()=>{}) => {
         } else {
           res.write(message);
         }
-        res.end()
-        next()
+        res.end();
+        next();
         break;
       case '/background.jpg' :
         fs.readFile(module.exports.backgroundImageFile, (err, data) => {
@@ -43,26 +43,33 @@ module.exports.router = (req, res, next = ()=>{}) => {
             res.writeHead(404, headers);
           } else {
             res.writeHead(200, headers);
-            res.write(data, 'binary');
+            res.write(data);
           }
-          res.end()
+          res.end();
           next();
         });
         break;
       };
+  } else if (req.method === 'POST') {
+    if (req.url === '/upload') {
+      let data;
+      req.on('data', chunk => {
+        data += chunk;
+      });
+      req.on('end', () => {
+        fs.readFile(data, 'binary', function(err, data) {
+          if (err) {
+            console.log('ERROR!!!!! NODEMON!!')
+          } else {
+            fs.writeFile('../background.jpg', data);
+          }
+        })
+      })
+      res.writeHead(201, headers);
+      res.end();
+      next();
+    };
   };
-}
+};
 
 
-
-// if (fs.existsSync(backgroundImagePath)) {
-//   let file = fs.createReadStream(backgroundImagePath);
-//   file.on('open', function() {
-//     res.setHeader('Content-type', 'image/jpeg')
-//     res.writeHead(200, headers);
-//     file.pipe(res);
-//   })
-//   // res.write(backgroundImagePath);  //send image not string
-// } else {
-//   res.writeHead(404, headers);
-// }
